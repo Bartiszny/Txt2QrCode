@@ -25,7 +25,7 @@ CXXFLAGS += -std=c++11 -O
 
 
 # ---- Targets to build ----
-# INC = ./SDL2/
+INC = ./SDL2
 LIB = qrcodegen
 LIBFILE = lib$(LIB).a
 LIBOBJ = QrCode.o
@@ -42,7 +42,7 @@ clean:
 
 # Executable files
 %: %.o $(LIBFILE)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $<  -L . -l $(LIB) -lSDL2
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $<  -L. -l$(LIB) -L./SDL2 -lSDL2
 
 # The library
 $(LIBFILE): $(LIBOBJ)

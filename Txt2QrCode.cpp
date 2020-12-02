@@ -33,20 +33,23 @@
 #include <vector>
 #include "QrCode.hpp"
 #include "SDL2/SDL.h"
+#include <bitset>
 using std::uint8_t;
 using qrcodegen::QrCode;
 using qrcodegen::QrSegment;
 const int WINDOW_W = 640;
 const int WINDOW_H = 480;
 // Function prototypes
-static void doBasicDemo(SDL_Window *window, SDL_Surface *surface);
+static void show_usage(std::string name);
+static void doBasicDemo(SDL_Window *window, SDL_Surface *surface, std::string text);
 static void printQr(const QrCode &qr);
 static void printQr1(const QrCode &qr);
 static void printQr2(const QrCode &qr);
 static void printQr3(const QrCode &qr, const int border, SDL_Surface * target);
+
 // The main application program.
 #undef main
-int main() {
+int main(int argc, char** argv) {
 
 /*---- SDL Init ----*/
 SDL_Init(SDL_INIT_VIDEO);
@@ -55,7 +58,35 @@ SDL_Init(SDL_INIT_VIDEO);
 		WINDOW_W, WINDOW_H, 0);
 		
 	SDL_Surface *surface = SDL_GetWindowSurface(window);
-	doBasicDemo(window, surface);
+	
+	std::bitset<8> mybitset {0000000};
+	std::string text = "https:\\\\google.pl\\";
+	std::vector<std::string> allArgs(argv, argv + argc);
+	for (std::vector<std::string>::const_iterator i = allArgs.begin() + 1; i != allArgs.end(); ++i) {
+		std::string temp(*i);
+		if (temp == "-l" && (i+1) != allArgs.end() ) {
+			text = *(i +1);
+		} else if (temp == "-svg" /*&& (i+1)!= allArgs.end()*/ ) {
+			mybitset |= 1<<0;
+			std::cout <<mybitset;
+		} else if (temp == "-bmp") {
+			mybitset |= 1<<1;
+			std::cout <<mybitset;
+		} else if (temp == "-h" || temp == "--help") {
+			show_usage(std::string (argv[0]));
+			return 0;
+		} else if (temp == "-d" || temp == "--demo") {
+			std::cout << "Runninng demo link:" << std::endl;
+		} else if (temp == "-v" || temp == "--verbose") {
+			mybitset |= 1<<2;
+			std::cout <<mybitset;
+		} else {
+			std::cout << "Uknown parameter \"" << *i << "\"" <<std::endl;
+			show_usage(std::string (argv[0]));
+			return 1;
+		}
+	}
+	doBasicDemo(window, surface, text);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 
@@ -64,12 +95,12 @@ SDL_Init(SDL_INIT_VIDEO);
 /*---- Demo suite ----*/
 
 // Creates a single QR Code, then prints it to the console.
-static void doBasicDemo(SDL_Window * window, SDL_Surface *surface) {
-	const char *text = "https://google.com";              // User-supplied text
+static void doBasicDemo(SDL_Window * window, SDL_Surface *surface, std::string text) {
 	const QrCode::Ecc errCorLvl = QrCode::Ecc::LOW;  // Error correction level
 	
+	const char *text_to_qr = text.c_str();
 	// Make and print the QR Code symbol
-	const QrCode qr = QrCode::encodeText(text, errCorLvl);
+	const QrCode qr = QrCode::encodeText(text_to_qr, errCorLvl);
 	//printQr(qr);
 	printQr1(qr);
 	//printQr2(qr);
@@ -84,10 +115,10 @@ static void doBasicDemo(SDL_Window * window, SDL_Surface *surface) {
 	static SDL_Surface *gradient = SDL_CreateRGBSurface(
 		0, W, H, 24, 0xff << 0, 0xff << 8, 0xff << 16, 0);
 	
-	
 	printQr3(qr, 4, gradient);
-		SDL_Surface *temp = SDL_CreateRGBSurface(
-	0, W2, H, 24 ,0xff << 0, 0xff << 8, 0xff << 16, 0);
+	
+	SDL_Surface *temp = SDL_CreateRGBSurface(
+		0, W2, H, 24 ,0xff << 0, 0xff << 8, 0xff << 16, 0);
 	
 	uint8_t *pixels = static_cast<uint8_t*>(gradient->pixels);
 	uint8_t *pixels2 = static_cast<uint8_t*>(temp->pixels);
@@ -106,7 +137,7 @@ static void doBasicDemo(SDL_Window * window, SDL_Surface *surface) {
 	}
 	
 	SDL_Surface *target = SDL_CreateRGBSurface(
-	0, W2, H2, 24 ,0xff << 0, 0xff << 8, 0xff << 16, 0);
+		0, W2, H2, 24 ,0xff << 0, 0xff << 8, 0xff << 16, 0);
 	uint8_t *pixels3 = static_cast<uint8_t*>(target->pixels);
 	
 	for (short i = 0; i<multipler*H; i++) {
@@ -199,4 +230,16 @@ static void printQr3(const QrCode &qr, const int border, SDL_Surface * target) {
 		}
 	}
 	return;
+}
+
+static void show_usage(std::string name)
+{
+    std::cerr << "Usage: " << name << " <option(s)> SOURCES\n"
+              << "Options:\n"
+              << "\t-h,--help\tShow this help message\n"
+              << "\t-l,--link LINK\tSpecify the link to convert\n"
+			  << "\t-svg\t\tSave output as SVG file\n"
+			  << "\t-bmp\t\tSave output as BMP file\n"
+			  << "\t-d,--demo\t\tRun demo link\n"
+              << std::endl;
 }

@@ -1,4 +1,3 @@
-/* include/SDL_config.h.  Generated from SDL_config.h.in by configure.  */
 /*
   Simple DirectMedia Layer
   Copyright (C) 1997-2020 Sam Lantinga <slouken@libsdl.org>
@@ -32,22 +31,19 @@
 /* General platform specific identifiers */
 #include "SDL_platform.h"
 
-/* Make sure that this isn't included by Visual C++ */
-#ifdef _MSC_VER
-#error You should run hg revert SDL_config.h
-#endif
-
 /* C language features */
 /* #undef const */
 /* #undef inline */
 /* #undef volatile */
 
 /* C datatypes */
+/* Define SIZEOF_VOIDP for 64/32 architectures */
 #ifdef __LP64__
 #define SIZEOF_VOIDP 8
 #else
 #define SIZEOF_VOIDP 4
 #endif
+
 #define HAVE_GCC_ATOMICS 1
 /* #undef HAVE_GCC_SYNC_LOCK_TEST_AND_SET */
 
@@ -56,11 +52,11 @@
 #if HAVE_LIBC
 
 /* Useful headers */
-#define STDC_HEADERS 1
+/* #undef STDC_HEADERS */
 /* #undef HAVE_ALLOCA_H */
 #define HAVE_CTYPE_H 1
-#define HAVE_FLOAT_H 1
-#define HAVE_ICONV_H 1
+/* #undef HAVE_FLOAT_H */
+/* #undef HAVE_ICONV_H */
 #define HAVE_INTTYPES_H 1
 #define HAVE_LIMITS_H 1
 #define HAVE_MALLOC_H 1
@@ -86,9 +82,9 @@
 /* #undef HAVE_ALLOCA */
 #ifndef __WIN32__ /* Don't use C runtime versions of these on Windows */
 #define HAVE_GETENV 1
-#define HAVE_SETENV 1
+/* #undef HAVE_SETENV */
 #define HAVE_PUTENV 1
-#define HAVE_UNSETENV 1
+/* #undef HAVE_UNSETENV */
 #endif
 #define HAVE_QSORT 1
 #define HAVE_ABS 1
@@ -136,11 +132,10 @@
 #define HAVE_STRCASECMP 1
 #define HAVE__STRNICMP 1
 #define HAVE_STRNCASECMP 1
-/* #undef HAVE_SSCANF */
+#define HAVE_SSCANF 1
 #define HAVE_VSSCANF 1
-/* #undef HAVE_SNPRINTF */
 #define HAVE_VSNPRINTF 1
-#define HAVE_M_PI /**/
+#define HAVE_M_PI 1
 #define HAVE_ACOS 1
 #define HAVE_ACOSF 1
 #define HAVE_ASIN 1
@@ -178,11 +173,11 @@
 #define HAVE_TAN 1
 #define HAVE_TANF 1
 #define HAVE_FOPEN64 1
-/* #undef HAVE_FSEEKO */
+#define HAVE_FSEEKO 1
 #define HAVE_FSEEKO64 1
 /* #undef HAVE_SIGACTION */
 /* #undef HAVE_SA_SIGACTION */
-/* #undef HAVE_SETJMP */
+#define HAVE_SETJMP 1
 #define HAVE_NANOSLEEP 1
 /* #undef HAVE_SYSCONF */
 /* #undef HAVE_SYSCTLBYNAME */
@@ -197,10 +192,13 @@
 /* #undef HAVE_POLL */
 #define HAVE__EXIT 1
 
-#else
+#elif __WIN32__
 #define HAVE_STDARG_H 1
 #define HAVE_STDDEF_H 1
-#define HAVE_STDINT_H 1
+/* #undef HAVE_FLOAT_H */
+#else
+/* We may need some replacement for stdarg.h here */
+#include <stdarg.h>
 #endif /* HAVE_LIBC */
 
 /* #undef HAVE_ALTIVEC_H */
@@ -211,13 +209,17 @@
 /* #undef HAVE_LIBSAMPLERATE_H */
 /* #undef HAVE_LIBUDEV_H */
 
-/* #undef HAVE_DDRAW_H */
-/* #undef HAVE_DINPUT_H */
-/* #undef HAVE_DSOUND_H */
-/* #undef HAVE_DXGI_H */
-/* #undef HAVE_XINPUT_H */
-/* #undef HAVE_MMDEVICEAPI_H */
-/* #undef HAVE_AUDIOCLIENT_H */
+#define HAVE_D3D_H 1
+#define HAVE_D3D11_H 1
+#define HAVE_DDRAW_H 1
+#define HAVE_DSOUND_H 1
+#define HAVE_DINPUT_H 1
+#define HAVE_XINPUT_H 1
+#define HAVE_DXGI_H 1
+
+#define HAVE_MMDEVICEAPI_H 1
+#define HAVE_AUDIOCLIENT_H 1
+
 /* #undef HAVE_XINPUT_GAMEPAD_EX */
 /* #undef HAVE_XINPUT_STATE_EX */
 
@@ -249,7 +251,7 @@
 /* #undef SDL_AUDIO_DRIVER_ARTS_DYNAMIC */
 /* #undef SDL_AUDIO_DRIVER_COREAUDIO */
 #define SDL_AUDIO_DRIVER_DISK 1
-/* #undef SDL_AUDIO_DRIVER_DSOUND */
+#define SDL_AUDIO_DRIVER_DSOUND 1
 #define SDL_AUDIO_DRIVER_DUMMY 1
 /* #undef SDL_AUDIO_DRIVER_EMSCRIPTEN */
 /* #undef SDL_AUDIO_DRIVER_ESD */
@@ -259,7 +261,6 @@
 /* #undef SDL_AUDIO_DRIVER_HAIKU */
 /* #undef SDL_AUDIO_DRIVER_JACK */
 /* #undef SDL_AUDIO_DRIVER_JACK_DYNAMIC */
-/* #undef SDL_AUDIO_DRIVER_NACL */
 /* #undef SDL_AUDIO_DRIVER_NAS */
 /* #undef SDL_AUDIO_DRIVER_NAS_DYNAMIC */
 /* #undef SDL_AUDIO_DRIVER_NETBSD */
@@ -272,34 +273,37 @@
 /* #undef SDL_AUDIO_DRIVER_SNDIO */
 /* #undef SDL_AUDIO_DRIVER_SNDIO_DYNAMIC */
 /* #undef SDL_AUDIO_DRIVER_SUNAUDIO */
-/* #undef SDL_AUDIO_DRIVER_WASAPI */
+#define SDL_AUDIO_DRIVER_WASAPI 1
 #define SDL_AUDIO_DRIVER_WINMM 1
 
 /* Enable various input drivers */
 /* #undef SDL_INPUT_LINUXEV */
 /* #undef SDL_INPUT_LINUXKD */
 /* #undef SDL_INPUT_TSLIB */
+/* #undef SDL_JOYSTICK_ANDROID */
 /* #undef SDL_JOYSTICK_HAIKU */
-/* #undef SDL_JOYSTICK_DINPUT */
-/* #undef SDL_JOYSTICK_XINPUT */
+#define SDL_JOYSTICK_DINPUT 1
+#define SDL_JOYSTICK_XINPUT 1
 /* #undef SDL_JOYSTICK_DUMMY */
 /* #undef SDL_JOYSTICK_IOKIT */
+/* #undef SDL_JOYSTICK_MFI */
 /* #undef SDL_JOYSTICK_LINUX */
-/* #undef SDL_JOYSTICK_ANDROID */
-#define SDL_JOYSTICK_WINMM 1
+/* #undef SDL_JOYSTICK_WINMM */
 /* #undef SDL_JOYSTICK_USBHID */
 /* #undef SDL_JOYSTICK_USBHID_MACHINE_JOYSTICK_H */
-/* #undef SDL_JOYSTICK_HIDAPI */
+#define SDL_JOYSTICK_HIDAPI 1
 /* #undef SDL_JOYSTICK_EMSCRIPTEN */
-#define SDL_HAPTIC_DUMMY 1
-/* #undef SDL_HAPTIC_ANDROID */
+/* #undef SDL_HAPTIC_DUMMY */
 /* #undef SDL_HAPTIC_LINUX */
 /* #undef SDL_HAPTIC_IOKIT */
-/* #undef SDL_HAPTIC_DINPUT */
-/* #undef SDL_HAPTIC_XINPUT */
+#define SDL_HAPTIC_DINPUT 1
+#define SDL_HAPTIC_XINPUT 1
+/* #undef SDL_HAPTIC_ANDROID */
+/* #undef SDL_LIBUSB_DYNAMIC */
 
 /* Enable various sensor drivers */
 /* #undef SDL_SENSOR_ANDROID */
+/* #undef SDL_SENSOR_COREMOTION */
 #define SDL_SENSOR_DUMMY 1
 
 /* Enable various shared object loading systems */
@@ -319,27 +323,35 @@
 /* #undef SDL_TIMER_DUMMY */
 /* #undef SDL_TIMER_UNIX */
 #define SDL_TIMER_WINDOWS 1
+/* #undef SDL_TIMER_WINCE */
 
 /* Enable various video drivers */
+/* #undef SDL_VIDEO_DRIVER_ANDROID */
 /* #undef SDL_VIDEO_DRIVER_HAIKU */
 /* #undef SDL_VIDEO_DRIVER_COCOA */
+/* #undef SDL_VIDEO_DRIVER_UIKIT */
 /* #undef SDL_VIDEO_DRIVER_DIRECTFB */
 /* #undef SDL_VIDEO_DRIVER_DIRECTFB_DYNAMIC */
 #define SDL_VIDEO_DRIVER_DUMMY 1
+/* #undef SDL_VIDEO_DRIVER_OFFSCREEN */
 #define SDL_VIDEO_DRIVER_WINDOWS 1
 /* #undef SDL_VIDEO_DRIVER_WAYLAND */
+/* #undef SDL_VIDEO_DRIVER_RPI */
+/* #undef SDL_VIDEO_DRIVER_VIVANTE */
+/* #undef SDL_VIDEO_DRIVER_VIVANTE_VDK */
+
+/* #undef SDL_VIDEO_DRIVER_KMSDRM */
+/* #undef SDL_VIDEO_DRIVER_KMSDRM_DYNAMIC */
+/* #undef SDL_VIDEO_DRIVER_KMSDRM_DYNAMIC_GBM */
+
 /* #undef SDL_VIDEO_DRIVER_WAYLAND_QT_TOUCH */
 /* #undef SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC */
 /* #undef SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_EGL */
 /* #undef SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_CURSOR */
 /* #undef SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_XKBCOMMON */
-/* #undef SDL_VIDEO_DRIVER_X11 */
-/* #undef SDL_VIDEO_DRIVER_RPI */
-/* #undef SDL_VIDEO_DRIVER_KMSDRM */
-/* #undef SDL_VIDEO_DRIVER_KMSDRM_DYNAMIC */
-/* #undef SDL_VIDEO_DRIVER_KMSDRM_DYNAMIC_GBM */
-/* #undef SDL_VIDEO_DRIVER_ANDROID */
+
 /* #undef SDL_VIDEO_DRIVER_EMSCRIPTEN */
+/* #undef SDL_VIDEO_DRIVER_X11 */
 /* #undef SDL_VIDEO_DRIVER_X11_DYNAMIC */
 /* #undef SDL_VIDEO_DRIVER_X11_DYNAMIC_XEXT */
 /* #undef SDL_VIDEO_DRIVER_X11_DYNAMIC_XCURSOR */
@@ -360,13 +372,9 @@
 /* #undef SDL_VIDEO_DRIVER_X11_SUPPORTS_GENERIC_EVENTS */
 /* #undef SDL_VIDEO_DRIVER_X11_CONST_PARAM_XEXTADDDISPLAY */
 /* #undef SDL_VIDEO_DRIVER_X11_HAS_XKBKEYCODETOKEYSYM */
-/* #undef SDL_VIDEO_DRIVER_NACL */
-/* #undef SDL_VIDEO_DRIVER_VIVANTE */
-/* #undef SDL_VIDEO_DRIVER_VIVANTE_VDK */
-/* #undef SDL_VIDEO_DRIVER_QNX */
 
 #define SDL_VIDEO_RENDER_D3D 1
-/* #undef SDL_VIDEO_RENDER_D3D11 */
+#define SDL_VIDEO_RENDER_D3D11 1
 #define SDL_VIDEO_RENDER_OGL 1
 /* #undef SDL_VIDEO_RENDER_OGL_ES */
 #define SDL_VIDEO_RENDER_OGL_ES2 1
@@ -379,9 +387,9 @@
 #define SDL_VIDEO_OPENGL_ES2 1
 /* #undef SDL_VIDEO_OPENGL_BGL */
 /* #undef SDL_VIDEO_OPENGL_CGL */
-#define SDL_VIDEO_OPENGL_EGL 1
 /* #undef SDL_VIDEO_OPENGL_GLX */
 #define SDL_VIDEO_OPENGL_WGL 1
+#define SDL_VIDEO_OPENGL_EGL 1
 /* #undef SDL_VIDEO_OPENGL_OSMESA */
 /* #undef SDL_VIDEO_OPENGL_OSMESA_DYNAMIC */
 
@@ -392,22 +400,22 @@
 /* #undef SDL_VIDEO_METAL */
 
 /* Enable system power support */
+/* #undef SDL_POWER_ANDROID */
 /* #undef SDL_POWER_LINUX */
 #define SDL_POWER_WINDOWS 1
 /* #undef SDL_POWER_MACOSX */
+/* #undef SDL_POWER_UIKIT */
 /* #undef SDL_POWER_HAIKU */
-/* #undef SDL_POWER_ANDROID */
 /* #undef SDL_POWER_EMSCRIPTEN */
 /* #undef SDL_POWER_HARDWIRED */
 
 /* Enable system filesystem support */
+/* #undef SDL_FILESYSTEM_ANDROID */
 /* #undef SDL_FILESYSTEM_HAIKU */
 /* #undef SDL_FILESYSTEM_COCOA */
 /* #undef SDL_FILESYSTEM_DUMMY */
 /* #undef SDL_FILESYSTEM_UNIX */
 #define SDL_FILESYSTEM_WINDOWS 1
-/* #undef SDL_FILESYSTEM_NACL */
-/* #undef SDL_FILESYSTEM_ANDROID */
 /* #undef SDL_FILESYSTEM_EMSCRIPTEN */
 
 /* Enable assembly routines */
@@ -416,16 +424,70 @@
 /* #undef SDL_ARM_SIMD_BLITTERS */
 /* #undef SDL_ARM_NEON_BLITTERS */
 
-/* Enable ime support */
-/* #undef SDL_USE_IME */
-
-/* Enable dynamic udev support */
-/* #undef SDL_UDEV_DYNAMIC */
-
-/* Enable dynamic libusb support */
-/* #undef SDL_LIBUSB_DYNAMIC */
-
 /* Enable dynamic libsamplerate support */
 /* #undef SDL_LIBSAMPLERATE_DYNAMIC */
+
+/* Platform specific definitions */
+/* #undef SDL_IPHONE_KEYBOARD */
+/* #undef SDL_IPHONE_LAUNCHSCREEN */
+
+#if !defined(__WIN32__)
+#  if !defined(_STDINT_H_) && !defined(_STDINT_H) && !defined(HAVE_STDINT_H) && !defined(_HAVE_STDINT_H)
+typedef unsigned int size_t;
+typedef signed char int8_t;
+typedef unsigned char uint8_t;
+typedef signed short int16_t;
+typedef unsigned short uint16_t;
+typedef signed int int32_t;
+typedef unsigned int uint32_t;
+typedef signed long long int64_t;
+typedef unsigned long long uint64_t;
+typedef unsigned long uintptr_t;
+#  endif /* if (stdint.h isn't available) */
+#else /* __WIN32__ */
+#  if !defined(_STDINT_H_) && !defined(HAVE_STDINT_H) && !defined(_HAVE_STDINT_H)
+#    if defined(__GNUC__) || defined(__DMC__) || defined(__WATCOMC__)
+#define HAVE_STDINT_H	1
+#    elif defined(_MSC_VER)
+typedef signed __int8 int8_t;
+typedef unsigned __int8 uint8_t;
+typedef signed __int16 int16_t;
+typedef unsigned __int16 uint16_t;
+typedef signed __int32 int32_t;
+typedef unsigned __int32 uint32_t;
+typedef signed __int64 int64_t;
+typedef unsigned __int64 uint64_t;
+#      ifndef _UINTPTR_T_DEFINED
+#        ifdef  _WIN64
+typedef unsigned __int64 uintptr_t;
+#          else
+typedef unsigned int uintptr_t;
+#        endif
+#define _UINTPTR_T_DEFINED
+#      endif
+/* Older Visual C++ headers don't have the Win64-compatible typedefs... */
+#      if ((_MSC_VER <= 1200) && (!defined(DWORD_PTR)))
+#define DWORD_PTR DWORD
+#      endif
+#      if ((_MSC_VER <= 1200) && (!defined(LONG_PTR)))
+#define LONG_PTR LONG
+#      endif
+#    else /* !__GNUC__ && !_MSC_VER */
+typedef signed char int8_t;
+typedef unsigned char uint8_t;
+typedef signed short int16_t;
+typedef unsigned short uint16_t;
+typedef signed int int32_t;
+typedef unsigned int uint32_t;
+typedef signed long long int64_t;
+typedef unsigned long long uint64_t;
+#      ifndef _SIZE_T_DEFINED_
+#define _SIZE_T_DEFINED_
+typedef unsigned int size_t;
+#      endif
+typedef unsigned int uintptr_t;
+#    endif /* __GNUC__ || _MSC_VER */
+#  endif /* !_STDINT_H_ && !HAVE_STDINT_H */
+#endif /* __WIN32__ */
 
 #endif /* SDL_config_h_ */
